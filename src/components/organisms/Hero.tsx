@@ -27,7 +27,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookingClick }) => {
                     </h1>
 
                     <p className="text-xl md:text-2xl text-zinc-500 mb-14 leading-relaxed max-w-xl font-light">
-                        Especialistas em esvaziamento de casas, apartamentos e escritórios em Genebra. Serviço completo, rápido e com a discrição suíça.
+                        Especialistas em esvaziamento de casas e <span className="text-zinc-900 font-medium">remoção técnica de eletrodomésticos</span> em Genebra. Serviço completo, rápido e com a discrição suíça.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-6">

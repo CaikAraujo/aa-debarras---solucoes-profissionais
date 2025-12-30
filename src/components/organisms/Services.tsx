@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const Services: React.FC = () => {
+interface ServicesProps {
+    onServiceSelect: (serviceName: string) => void;
+}
+
+export const Services: React.FC<ServicesProps> = ({ onServiceSelect }) => {
     const items = [
         {
             title: "Débarras de Casas",
@@ -18,9 +22,9 @@ export const Services: React.FC = () => {
             desc: "Remoção de mobiliário de escritório, arquivos mortos e equipamentos eletrónicos."
         },
         {
-            title: "Limpeza Profissional",
+            title: "Débarras de électroménager",
             img: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=2070&auto=format&fit=crop",
-            desc: "Limpeza profunda após esvaziamento para que o imóvel esteja pronto para venda ou aluguer."
+            desc: "Remoção ecológica de eletrodomésticos antigos, garantindo a reciclagem e o descarte responsável."
         }
     ];
 
@@ -43,7 +47,10 @@ export const Services: React.FC = () => {
                             <div className="p-8">
                                 <h3 className="text-xl font-bold text-blue-950 mb-3">{item.title}</h3>
                                 <p className="text-slate-600 mb-6 leading-relaxed">{item.desc}</p>
-                                <button className="text-emerald-600 font-bold flex items-center gap-2 hover:gap-4 transition-all cursor-pointer">
+                                <button
+                                    onClick={() => onServiceSelect(item.title)}
+                                    className="text-emerald-600 font-bold flex items-center gap-2 hover:gap-4 transition-all cursor-pointer"
+                                >
                                     Saber mais
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

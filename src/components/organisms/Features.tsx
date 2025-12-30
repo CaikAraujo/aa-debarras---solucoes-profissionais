@@ -3,16 +3,16 @@ import React from 'react';
 export const Features: React.FC = () => {
     const features = [
         {
+            label: "Spécialité",
+            title: "Expertise em Eletrodomésticos",
+            desc: "Remoção técnica e segura de grandes equipamentos (frigoríficos, máquinas, etc).",
+            color: "bg-emerald-600"
+        },
+        {
             label: "Efficacité",
             title: "Rigor Suíço",
             desc: "Execução precisa e pontual. Planeamento detalhado para zero imprevistos.",
             color: "bg-zinc-950"
-        },
-        {
-            label: "Écologie",
-            title: "Eco-Sistema",
-            desc: "Reciclagem certificada. Damos destino responsável a cada item retirado.",
-            color: "bg-emerald-600"
         },
         {
             label: "Discrétion",
