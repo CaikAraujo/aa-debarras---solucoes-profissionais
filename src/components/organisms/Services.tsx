@@ -29,30 +29,31 @@ export const Services: React.FC<ServicesProps> = ({ onServiceSelect }) => {
     ];
 
     return (
-        <section id="services" className="py-24 bg-slate-50">
+        <section id="services" className="py-32 bg-zinc-50">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16">
-                    <h2 className="text-5xl font-serif text-blue-950 mb-6">Nossas Soluções</h2>
-                    <p className="text-slate-600 text-xl max-w-2xl mx-auto">
+                <div className="text-center mb-20 animate-reveal">
+                    <h2 className="text-5xl md:text-6xl font-medium text-zinc-950 mb-6 tracking-tight">Nossas <span className="font-serif italic text-emerald-600">Soluções</span></h2>
+                    <p className="text-zinc-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
                         Oferecemos uma gama completa de serviços adaptados às suas necessidades específicas.
                     </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {items.map((item, i) => (
-                        <div key={i} className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                            <div className="h-64 overflow-hidden">
+                        <div key={i} className="group bg-white rounded-[32px] overflow-hidden border border-zinc-100 hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500 transform hover:-translate-y-2">
+                            <div className="h-64 overflow-hidden relative">
+                                <div className="absolute inset-0 bg-zinc-900/10 group-hover:bg-transparent transition-colors z-10"></div>
                                 <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                             </div>
                             <div className="p-8">
-                                <h3 className="text-xl font-bold text-blue-950 mb-3">{item.title}</h3>
-                                <p className="text-slate-600 mb-6 leading-relaxed">{item.desc}</p>
+                                <h3 className="text-xl font-bold text-zinc-950 mb-3 group-hover:text-emerald-700 transition-colors">{item.title}</h3>
+                                <p className="text-zinc-500 mb-8 leading-relaxed font-light text-sm">{item.desc}</p>
                                 <button
                                     onClick={() => onServiceSelect(item.title)}
-                                    className="text-emerald-600 font-bold flex items-center gap-2 hover:gap-4 transition-all cursor-pointer"
+                                    className="text-zinc-950 font-bold text-xs uppercase tracking-widest flex items-center gap-3 group-hover:gap-5 transition-all cursor-pointer group-hover:text-emerald-600"
                                 >
                                     Saber mais
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
                                 </button>

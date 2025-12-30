@@ -8,6 +8,9 @@ import { Services } from '@/components/organisms/Services';
 import { CallToAction } from '@/components/organisms/CallToAction';
 import { Footer } from '@/components/organisms/Footer';
 import { BookingForm } from '@/components/organisms/BookingForm';
+import { Testimonials } from '@/components/organisms/Testimonials';
+import { ProcessTimeline } from '@/components/organisms/ProcessTimeline';
+import { FAQ } from '@/components/organisms/FAQ';
 
 import { ProjectBuilder } from '@/components/organisms/ProjectBuilder';
 
@@ -32,6 +35,9 @@ export const HomeTemplate: React.FC = () => {
                         <Hero onBookingClick={() => setShowBooking(true)} />
                         <Features />
                         <Services onServiceSelect={setProjectBuilderService} />
+                        <ProcessTimeline />
+                        <Testimonials />
+                        <FAQ />
 
                         {showBooking && (
                             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">

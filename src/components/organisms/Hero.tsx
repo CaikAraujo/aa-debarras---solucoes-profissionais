@@ -21,7 +21,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookingClick }) => {
                         <span className="text-emerald-700 font-bold tracking-[0.4em] text-xs uppercase">Genève • Vaud • Suisse Romande</span>
                     </div>
 
-                    <h1 className="text-6xl md:text-8xl font-medium leading-[0.95] text-zinc-950 mb-10 tracking-tighter">
+                    <h1 className="text-5xl sm:text-6xl md:text-8xl font-medium leading-[0.95] text-zinc-950 mb-10 tracking-tighter">
                         Débarras <br />
                         <span className="font-serif italic text-emerald-600">Profissional.</span>
                     </h1>

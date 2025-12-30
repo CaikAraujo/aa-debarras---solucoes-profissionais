@@ -1,4 +1,4 @@
-import React from 'react';
+import Link from 'next/link';
 
 export const Footer: React.FC = () => {
     return (
@@ -27,10 +27,10 @@ export const Footer: React.FC = () => {
                     <div>
                         <h4 className="text-sm font-bold uppercase tracking-[0.3em] text-zinc-200 mb-10">Serviços</h4>
                         <ul className="space-y-5 text-zinc-500 font-medium text-sm">
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Residencial Premium</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Esvaziamento Corporativo</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Limpeza Pós-Obras</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Gestão de Resíduos</a></li>
+                            <li><Link href="/services" className="hover:text-emerald-500 transition-colors">Residencial Premium</Link></li>
+                            <li><Link href="/services" className="hover:text-emerald-500 transition-colors">Esvaziamento Corporativo</Link></li>
+                            <li><Link href="/services" className="hover:text-emerald-500 transition-colors">Limpeza Pós-Obras</Link></li>
+                            <li><Link href="/services" className="hover:text-emerald-500 transition-colors">Gestão de Resíduos</Link></li>
                         </ul>
                     </div>
 
@@ -39,11 +39,11 @@ export const Footer: React.FC = () => {
                         <ul className="space-y-5 text-zinc-500 font-medium text-sm">
                             <li className="flex flex-col">
                                 <span className="text-zinc-200">Suíça</span>
-                                <span>+41 (0) 22 123 45 67</span>
+                                <span>+41 (0) 77 948 24 57</span>
                             </li>
                             <li className="flex flex-col">
                                 <span className="text-zinc-200">E-mail</span>
-                                <span>contact@aa-debarras.ch</span>
+                                <span>info@aa-debarras.ch</span>
                             </li>
                         </ul>
                     </div>

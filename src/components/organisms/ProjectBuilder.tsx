@@ -56,6 +56,38 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
         "Quadro Branco": 0
     });
 
+    // Base prices for estimation (in CHF)
+    const ITEM_PRICES: { [key: string]: number } = {
+        "Sofá de 2 Lugares": 80,
+        "Sofá de 3+ Lugares": 120,
+        "Poltrona": 50,
+        "Mesa de Jantar": 60,
+        "Cadeira": 15,
+        "Cama de Solteiro": 50,
+        "Cama de Casal": 90,
+        "Armário/Roupeiro": 100,
+        "Cómoda": 60,
+        "Estante": 40,
+        "Frigorífico": 50,
+        "Máquina Lavar": 40,
+        "Televisão": 20,
+        "Caixas (Pequenas)": 5,
+        "Caixas (Grandes)": 8,
+        "Sacos de Lixo": 3,
+        "Micro-ondas": 15,
+        "Forno/Fogão": 40,
+        "Máquina Loiça": 40,
+        "Máquina Secar": 40,
+        "Pequenos Eletrodomésticos": 10,
+        "Mesa de Escritório": 50,
+        "Cadeira de Escritório": 20,
+        "Arquivo/Cajonera": 30,
+        "Impressora/Copiadora": 40,
+        "Computador/Monitor": 25,
+        "Servidor/Rack": 150,
+        "Quadro Branco": 20
+    };
+
     const [customItemName, setCustomItemName] = useState('');
     const [logistics, setLogistics] = useState({ floor: '0', elevator: true, parking: true });
     const [schedule, setSchedule] = useState({ date: '', time: '' });
@@ -84,6 +116,25 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
     const back = () => setStep(s => s - 1);
 
     const totalItems = (Object.values(items) as number[]).reduce((a: number, b: number) => a + b, 0);
+
+    const calculateTotal = () => {
+        let total = 0;
+        Object.entries(items).forEach(([name, quantity]) => {
+            const price = ITEM_PRICES[name] || 20; // Default fallback price
+            total += price * quantity;
+        });
+
+        // Logistics multipliers
+        if (logistics.elevator) total *= 0.9; // Discount for elevator
+        if (logistics.floor !== 'R/C' && !logistics.elevator) {
+            const floorNum = parseInt(logistics.floor.replace('º', '')) || 0;
+            total += floorNum * 50; // Extra charge per floor without elevator
+        }
+
+        return Math.round(total);
+    };
+
+    const estimatedTotal = calculateTotal();
 
     const handleSubmit = () => {
         // Simulação de envio
@@ -154,7 +205,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
     };
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-white">
+        <div className="h-full flex flex-col md:flex-row bg-white">
             {/* Sidebar de Progresso (Fixa no Desktop) */}
             <aside className="w-full md:w-[350px] bg-zinc-950 text-white p-8 md:p-12 flex flex-col justify-between shrink-0">
                 <div>
@@ -170,7 +221,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                             { id: Step.Schedule, label: "Agenda", desc: "Data e hora" },
                             { id: Step.Finalize, label: "Finalização", desc: "Seus contactos" }
                         ].map((s) => (
-                            <div key={s.id} className={`flex items-start gap-5 transition-all duration-500 shrink-0 ${step >= s.id ? 'opacity-100' : 'opacity-20'}`}>
+                            <div key={s.id} className={`flex items-start gap-5 transition-all duration-500 shrink-0 ${step >= s.id ? 'opacity-100 cursor-pointer' : 'opacity-20'} ${step > s.id ? 'hover:opacity-80' : ''}`} onClick={() => step > s.id && setStep(s.id)}>
                                 <div className={`hidden md:block w-1 h-12 rounded-full transition-all duration-700 ${step === s.id ? 'bg-emerald-500 scale-y-110 shadow-[0_0_15px_rgba(16,185,129,0.5)]' : step > s.id ? 'bg-zinc-700' : 'bg-zinc-800'}`}></div>
                                 <div>
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Passo 0{s.id + 1}</p>
@@ -193,28 +244,46 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                             <span className="text-zinc-500">Itens:</span>
                             <span>{totalItems} selecionados</span>
                         </div>
+                        <div className="flex justify-between text-xs border-t border-white/10 pt-2 mt-2">
+                            <span className="text-zinc-500">Estimativa:</span>
+                            <span className="text-emerald-500 font-bold text-lg">{estimatedTotal} CHF</span>
+                        </div>
                     </div>
                 </div>
             </aside>
 
+            {/* Mobile Progress Bar (Visible only on mobile) */}
+            <div className="md:hidden bg-zinc-950 text-white p-4 shrink-0 flex items-center justify-between">
+                <div className="flex items-center gap-2" onClick={onBack}>
+                    <div className="w-6 h-6 bg-emerald-600 rounded flex items-center justify-center text-[10px] font-bold">AA</div>
+                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">Builder</span>
+                </div>
+                <div className="flex gap-1">
+                    {[0, 1, 2, 3].map(i => (
+                        <div key={i} className={`h-1 w-8 rounded-full transition-colors ${step >= i ? 'bg-emerald-500' : 'bg-zinc-800'}`}></div>
+                    ))}
+                </div>
+            </div>
+
             {/* Área de Conteúdo */}
-            <main className="flex-grow bg-white flex flex-col h-screen overflow-hidden">
+            <main className="flex-1 bg-white flex flex-col min-h-0 overflow-hidden relative">
                 {/* Header de Ação */}
-                <header className="p-6 md:p-12 flex justify-between items-center border-b border-zinc-50 shrink-0">
+                {/* Header de Ação */}
+                <header className="p-4 md:p-12 flex justify-between items-center border-b border-zinc-50 shrink-0">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-3 text-zinc-400 hover:text-zinc-950 transition-colors font-bold text-xs uppercase tracking-widest"
+                        className="flex items-center gap-3 text-zinc-400 hover:text-zinc-950 transition-colors font-bold text-xs uppercase tracking-widest cursor-pointer"
                     >
-                        <span className="text-lg">←</span> <span className="hidden md:inline">Sair do Configurador</span><span className="md:hidden">Sair</span>
+                        <span className="text-lg">←</span> <span className="inline">Sair</span>
                     </button>
-                    <div className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.5em]">
+                    <div className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.5em] hidden sm:block">
                         Switzerland Standards
                     </div>
                 </header>
 
                 {/* Formulário Dinâmico */}
-                <div className="flex-grow overflow-y-auto">
-                    <div className="max-w-4xl mx-auto py-10 px-6 md:py-24 md:px-8">
+                <div className="flex-1 overflow-y-auto">
+                    <div className="max-w-4xl mx-auto pt-10 pb-40 px-6 md:py-24 md:px-8">
 
                         {step === Step.Inventory && (
                             <div className="animate-reveal">
@@ -222,19 +291,20 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                                 <p className="text-zinc-400 text-lg mb-10 max-w-xl font-light">Especifique a quantidade aproximada para que possamos dimensionar a equipa e o transporte ideal.</p>
 
                                 {/* Custom Item Input */}
-                                <div className="mb-14 p-2 bg-zinc-50 border border-zinc-200 rounded-[30px] flex gap-2 shadow-inner max-w-xl">
+                                <div className="mb-10 md:mb-14 p-1.5 md:p-2 bg-zinc-50 border border-zinc-200 rounded-[30px] flex items-center gap-2 shadow-inner max-w-xl">
                                     <input
                                         value={customItemName}
                                         onChange={(e) => setCustomItemName(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && addCustomItem()}
-                                        placeholder="Não encontrou? Adicione um item específico..."
-                                        className="flex-grow bg-transparent px-6 py-4 outline-none text-zinc-800 placeholder:text-zinc-400 font-medium"
+                                        placeholder="Item não listado..."
+                                        className="flex-grow bg-transparent px-4 md:px-6 py-3 md:py-4 outline-none text-zinc-800 placeholder:text-zinc-400 font-medium text-sm md:text-base w-full min-w-0"
                                     />
                                     <button
                                         onClick={addCustomItem}
-                                        className="bg-zinc-950 text-white px-8 rounded-[24px] font-bold hover:bg-emerald-600 transition-all uppercase tracking-widest text-xs"
+                                        className="bg-zinc-950 text-white w-12 h-12 md:w-auto md:h-auto md:px-8 md:py-3 rounded-full font-bold hover:bg-emerald-600 transition-all uppercase tracking-widest text-xs cursor-pointer shrink-0 flex items-center justify-center shadow-lg shadow-zinc-900/10"
                                     >
-                                        Adicionar
+                                        <span className="hidden md:inline">Adicionar</span>
+                                        <span className="md:hidden"><Plus size={20} /></span>
                                     </button>
                                 </div>
 
@@ -302,32 +372,44 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                                             return true;
                                         })
                                         .map(name => (
-                                            <div key={name} className="p-6 md:p-8 rounded-[30px] border border-zinc-100 bg-white hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between h-[280px]">
-                                                <div className="flex justify-between items-start">
-                                                    <div className="p-4 rounded-2xl bg-zinc-50 group-hover:bg-emerald-50 transition-colors">
+                                            <div key={name} className="p-4 md:p-8 rounded-[24px] md:rounded-[30px] border border-zinc-100 bg-white hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 group relative overflow-hidden flex flex-row md:flex-col items-center md:items-stretch justify-between h-auto md:h-[280px] gap-4 md:gap-0">
+
+                                                {/* Icon & Count Badge */}
+                                                <div className="flex md:w-full justify-between items-start shrink-0">
+                                                    <div className="p-3 md:p-4 rounded-2xl bg-zinc-50 group-hover:bg-emerald-50 transition-colors">
                                                         {getIcon(name)}
                                                     </div>
                                                     {items[name] > 0 && (
-                                                        <span className="font-bold text-lg text-emerald-600 bg-emerald-50 px-3 py-1 rounded-xl">
+                                                        <span className="hidden md:inline-block font-bold text-lg text-emerald-600 bg-emerald-50 px-3 py-1 rounded-xl">
                                                             {items[name]}
                                                         </span>
                                                     )}
                                                 </div>
 
-                                                <div>
-                                                    <p className="font-bold text-zinc-900 text-lg mb-6 leading-tight">{name}</p>
-                                                    <div className="flex items-center gap-2">
+                                                {/* Name & Controls */}
+                                                <div className="flex-grow flex flex-col md:block justify-between h-full md:h-auto pl-2 md:pl-0 min-w-0">
+                                                    <div className="flex justify-between items-center md:block mb-1 md:mb-6">
+                                                        <p className="font-bold text-zinc-900 text-sm md:text-lg leading-tight truncate md:whitespace-normal pr-2">{name}</p>
+                                                        {/* Mobile Badge */}
+                                                        {items[name] > 0 && (
+                                                            <span className="md:hidden font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg shrink-0">
+                                                                {items[name]}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2 justify-end md:justify-start">
                                                         <button
                                                             onClick={() => updateItem(name, -1)}
-                                                            className="w-12 h-12 rounded-xl border border-zinc-100 flex items-center justify-center hover:bg-zinc-50 transition-colors text-zinc-400 hover:text-zinc-900"
+                                                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-zinc-100 flex items-center justify-center hover:bg-zinc-50 transition-colors text-zinc-400 hover:text-zinc-900 cursor-pointer"
                                                         >
-                                                            <Minus size={20} />
+                                                            <Minus size={18} />
                                                         </button>
                                                         <button
                                                             onClick={() => updateItem(name, 1)}
-                                                            className="w-12 h-12 rounded-xl bg-zinc-950 text-white flex items-center justify-center hover:bg-emerald-600 transition-colors shadow-lg shadow-zinc-900/10 group-hover:shadow-emerald-600/20"
+                                                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-zinc-950 text-white flex items-center justify-center hover:bg-emerald-600 transition-colors shadow-lg shadow-zinc-900/10 group-hover:shadow-emerald-600/20 cursor-pointer"
                                                         >
-                                                            <Plus size={20} />
+                                                            <Plus size={18} />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -350,7 +432,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                                                 <button
                                                     key={f}
                                                     onClick={() => setLogistics({ ...logistics, floor: f })}
-                                                    className={`min-w-[80px] md:min-w-[100px] h-20 md:h-24 rounded-3xl font-bold transition-all border-2 text-xl ${logistics.floor === f ? 'bg-zinc-950 text-white border-zinc-950 scale-105 shadow-2xl' : 'bg-white text-zinc-400 border-zinc-100 hover:border-emerald-200'
+                                                    className={`min-w-[80px] md:min-w-[100px] h-20 md:h-24 rounded-3xl font-bold transition-all border-2 text-xl cursor-pointer ${logistics.floor === f ? 'bg-zinc-950 text-white border-zinc-950 scale-105 shadow-2xl' : 'bg-white text-zinc-400 border-zinc-100 hover:border-emerald-200'
                                                         }`}
                                                 >
                                                     {f}
@@ -359,32 +441,65 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
                                         <button
                                             onClick={() => setLogistics({ ...logistics, elevator: !logistics.elevator })}
-                                            className={`p-10 rounded-[45px] border-2 text-left transition-all relative overflow-hidden group ${logistics.elevator ? 'border-emerald-600 bg-emerald-50/50' : 'border-zinc-100 bg-zinc-50/50'}`}
+                                            className={`relative p-6 md:p-8 rounded-[32px] md:rounded-[40px] border-2 text-left transition-all duration-300 group overflow-hidden active:scale-95 ${logistics.elevator
+                                                ? 'border-emerald-500 bg-emerald-50 shadow-[0_10px_30px_-10px_rgba(16,185,129,0.3)]'
+                                                : 'border-zinc-100 bg-white hover:border-zinc-200 hover:shadow-lg hover:shadow-zinc-200/50'
+                                                }`}
                                         >
-                                            <div className={`absolute top-0 right-0 p-6 transition-transform group-hover:scale-125 ${logistics.elevator ? 'text-emerald-500' : 'text-zinc-200'}`}>
-                                                <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                                </svg>
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 ${logistics.elevator ? 'bg-emerald-500 text-white scale-110 rotate-0 shadow-lg shadow-emerald-500/30' : 'bg-zinc-100 text-zinc-400 rotate-0'
+                                                    }`}>
+                                                    {logistics.elevator ? '✨' : '🪜'}
+                                                </div>
+                                                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${logistics.elevator
+                                                    ? 'border-emerald-500 bg-emerald-500 text-white scale-100 opacity-100'
+                                                    : 'border-zinc-200 bg-transparent text-transparent scale-90 opacity-50'
+                                                    }`}>
+                                                    <Check size={16} strokeWidth={4} />
+                                                </div>
                                             </div>
-                                            <span className="text-4xl block mb-6">{logistics.elevator ? '✨' : '⚠️'}</span>
-                                            <span className="text-2xl font-bold text-zinc-900 block mb-2">Elevador</span>
-                                            <p className="text-zinc-500 font-light">O prédio possui elevador de serviço ou carga utilizável.</p>
+
+                                            <h4 className={`text-xl md:text-2xl font-bold mb-2 transition-colors duration-300 ${logistics.elevator ? 'text-emerald-950' : 'text-zinc-900'}`}>
+                                                {logistics.elevator ? 'Com Elevador' : 'Sem Elevador'}
+                                            </h4>
+                                            <p className="text-sm text-zinc-500 leading-relaxed font-medium">
+                                                {logistics.elevator
+                                                    ? 'Agiliza o transporte e reduz o tempo.'
+                                                    : 'Necessário prever esforço extra.'}
+                                            </p>
                                         </button>
+
                                         <button
                                             onClick={() => setLogistics({ ...logistics, parking: !logistics.parking })}
-                                            className={`p-10 rounded-[45px] border-2 text-left transition-all relative overflow-hidden group ${logistics.parking ? 'border-emerald-600 bg-emerald-50/50' : 'border-zinc-100 bg-zinc-50/50'}`}
+                                            className={`relative p-6 md:p-8 rounded-[32px] md:rounded-[40px] border-2 text-left transition-all duration-300 group overflow-hidden active:scale-95 ${logistics.parking
+                                                ? 'border-emerald-500 bg-emerald-50 shadow-[0_10px_30px_-10px_rgba(16,185,129,0.3)]'
+                                                : 'border-zinc-100 bg-white hover:border-zinc-200 hover:shadow-lg hover:shadow-zinc-200/50'
+                                                }`}
                                         >
-                                            <div className={`absolute top-0 right-0 p-6 transition-transform group-hover:scale-125 ${logistics.parking ? 'text-emerald-500' : 'text-zinc-200'}`}>
-                                                <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                                                </svg>
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 ${logistics.parking ? 'bg-emerald-500 text-white scale-110 rotate-0 shadow-lg shadow-emerald-500/30' : 'bg-zinc-100 text-zinc-400 rotate-0'
+                                                    }`}>
+                                                    {logistics.parking ? '🚛' : '🏃'}
+                                                </div>
+                                                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${logistics.parking
+                                                    ? 'border-emerald-500 bg-emerald-500 text-white scale-100 opacity-100'
+                                                    : 'border-zinc-200 bg-transparent text-transparent scale-90 opacity-50'
+                                                    }`}>
+                                                    <Check size={16} strokeWidth={4} />
+                                                </div>
                                             </div>
-                                            <span className="text-4xl block mb-6">{logistics.parking ? '🚛' : '⏳'}</span>
-                                            <span className="text-2xl font-bold text-zinc-900 block mb-2">Estacionamento</span>
-                                            <p className="text-zinc-500 font-light">Existe zona de cargas e descargas ou estacionamento fácil à porta.</p>
+
+                                            <h4 className={`text-xl md:text-2xl font-bold mb-2 transition-colors duration-300 ${logistics.parking ? 'text-emerald-950' : 'text-zinc-900'}`}>
+                                                {logistics.parking ? 'Estacionamento' : 'Difícil Acesso'}
+                                            </h4>
+                                            <p className="text-sm text-zinc-500 leading-relaxed font-medium">
+                                                {logistics.parking
+                                                    ? 'Vaga disponível próxima à porta.'
+                                                    : 'Distância maior que 50m do imóvel.'}
+                                            </p>
                                         </button>
                                     </div>
                                 </div>
@@ -412,7 +527,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                                                 <button
                                                     key={t}
                                                     onClick={() => setSchedule({ ...schedule, time: t })}
-                                                    className={`p-8 rounded-[30px] font-bold transition-all border-2 text-left flex justify-between items-center ${schedule.time === t ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xl scale-[1.02]' : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:border-emerald-100'
+                                                    className={`p-8 rounded-[30px] font-bold transition-all border-2 text-left flex justify-between items-center cursor-pointer ${schedule.time === t ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xl scale-[1.02]' : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:border-emerald-100'
                                                         }`}
                                                 >
                                                     <span className="text-lg">{t}</span>
@@ -471,7 +586,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                 </div>
 
                 {/* Footer de Navegação da Página */}
-                <footer className="p-6 md:p-12 border-t border-zinc-50 flex justify-between items-center bg-white shrink-0">
+                <footer className="p-4 md:p-12 border-t border-zinc-50 flex justify-between items-center bg-white shrink-0 sticky bottom-0 z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] md:shadow-none">
                     <div className="hidden md:flex gap-10">
                         <div className="flex flex-col">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-300">Resumo</span>
@@ -487,7 +602,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                         {step > 0 && (
                             <button
                                 onClick={back}
-                                className="px-10 py-6 rounded-full text-zinc-400 font-bold hover:text-zinc-950 transition-colors uppercase tracking-widest text-xs"
+                                className="px-6 md:px-10 py-4 md:py-6 rounded-full text-zinc-400 font-bold hover:text-zinc-950 transition-colors uppercase tracking-widest text-xs cursor-pointer bg-zinc-50 md:bg-transparent"
                             >
                                 Voltar
                             </button>
@@ -495,9 +610,9 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
                         <button
                             onClick={step === Step.Finalize ? handleSubmit : next}
                             disabled={step === Step.Finalize && (!contact.name || !contact.phone)}
-                            className="flex-grow md:flex-none bg-zinc-950 text-white px-14 py-6 rounded-full font-bold hover:bg-emerald-600 transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] uppercase tracking-widest text-xs disabled:opacity-30 active:scale-95"
+                            className="flex-grow md:flex-none bg-zinc-950 text-white px-8 md:px-14 py-4 md:py-6 rounded-full font-bold hover:bg-emerald-600 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.1)] uppercase tracking-widest text-xs disabled:opacity-30 active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                         >
-                            {step === Step.Finalize ? 'Enviar Configuração Premium' : 'Próximo Passo'}
+                            {step === Step.Finalize ? 'Enviar' : 'Próximo'}
                         </button>
                     </div>
                 </footer>

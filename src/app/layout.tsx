@@ -15,8 +15,8 @@ const libre = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
-  title: "AA Débarras | Excellence en Débarras",
-  description: "Excellence in Space Redefinition",
+  title: "AA Débarras | Esvaziamento e Limpeza Profissional na Suíça",
+  description: "Líderes em esvaziamento de casas, apartamentos e escritórios em Genebra e Vaud. Serviço rápido, discreto e eco-responsável. Contacte-nos para um orçamento gratuito.",
 };
 
 export default function RootLayout({
