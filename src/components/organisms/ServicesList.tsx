@@ -9,27 +9,35 @@ export const ServicesList: React.FC<ServicesListProps> = ({ onBookingClick }) =>
     const services = [
         {
             category: "Residencial",
-            title: "Esvaziamento de Casas",
-            description: "Serviço completo para vivendas, apartamentos e propriedades de luxo. Tratamos de tudo, desde a triagem inicial até à limpeza final.",
+            title: "Débarras de Casas",
+            description: "Esvaziamento completo de vivendas, incluindo garagens, sótãos e jardins. Tratamos de tudo, desde a triagem inicial até à limpeza final.",
             features: ["Remoção de mobiliário", "Triagem de pertences", "Limpeza pós-obra", "Gestão de doações"],
-            image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2074&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070&auto=format&fit=crop",
             reverse: false
         },
         {
-            category: "Comercial",
-            title: "Escritórios & Espaços Corporativos",
-            description: "Soluções ágeis para empresas em mudança ou encerramento. Minimizamos o impacto nas suas operações com intervenções rápidas e discretas.",
-            features: ["Desmontagem de cubículos", "Remoção de arquivo morto", "Reciclagem de eletrónicos", "Certificado de destruição"],
-            image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2070&auto=format&fit=crop",
+            category: "Apartamentos",
+            title: "Apartamentos",
+            description: "Serviço discreto para apartamentos em andares elevados com ou sem elevador. Especialistas em acessos difíceis e condomínios.",
+            features: ["Acesso difícil/Escadas", "Elevador exterior", "Respeito condomínio", "Rapidez e discrição"],
+            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop",
             reverse: true
         },
         {
-            category: "Especializado",
-            title: "Limpeza & Casos Complexos",
-            description: "Intervenções em situações delicadas (Síndrome de Diógenes, sucessões complexas) com o máximo respeito, discrição e profissionalismo.",
-            features: ["Discreção absoluta", "Equipamento de proteção", "Higienização profunda", "Respeito pela privacidade"],
-            image: "https://images.unsplash.com/photo-1505798577917-a651a5d40318?q=80&w=2070&auto=format&fit=crop",
+            category: "Comercial",
+            title: "Escritórios e Empresas",
+            description: "Soluções ágeis para empresas em mudança ou encerramento. Minimizamos o impacto nas suas operações com intervenções rápidas.",
+            features: ["Desmontagem de cubículos", "Remoção de arquivo morto", "Reciclagem de eletrónicos", "Certificado de destruição"],
+            image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2070&auto=format&fit=crop",
             reverse: false
+        },
+        {
+            category: "Eletrodomésticos",
+            title: "Débarras de électroménager",
+            description: "Remoção ecológica de eletrodomésticos antigos, garantindo a reciclagem e o descarte responsável em centros certificados.",
+            features: ["Reciclagem certificada", "Remoção de pesados", "Desconexão segura", "Eco-responsável"],
+            image: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=2070&auto=format&fit=crop",
+            reverse: true
         }
     ];
 

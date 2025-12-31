@@ -7,12 +7,12 @@ import { Features } from '@/components/organisms/Features';
 import { Services } from '@/components/organisms/Services';
 import { CallToAction } from '@/components/organisms/CallToAction';
 import { Footer } from '@/components/organisms/Footer';
-import { BookingForm } from '@/components/organisms/BookingForm';
 import { Testimonials } from '@/components/organisms/Testimonials';
 import { ProcessTimeline } from '@/components/organisms/ProcessTimeline';
 import { FAQ } from '@/components/organisms/FAQ';
 
 import { ProjectBuilder } from '@/components/organisms/ProjectBuilder';
+import { ServiceSelectionModal } from '@/components/organisms/ServiceSelectionModal';
 
 export const HomeTemplate: React.FC = () => {
     const [showBooking, setShowBooking] = useState(false);
@@ -40,7 +40,7 @@ export const HomeTemplate: React.FC = () => {
                         <FAQ />
 
                         {showBooking && (
-                            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+                            <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
                                 <div className="bg-white rounded-[48px] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative border border-white/20 animate-reveal">
                                     <button
                                         onClick={() => setShowBooking(false)}
@@ -51,7 +51,12 @@ export const HomeTemplate: React.FC = () => {
                                         </svg>
                                     </button>
                                     <div className="p-8 md:p-16">
-                                        <BookingForm onComplete={() => setShowBooking(false)} />
+                                        <ServiceSelectionModal
+                                            onSelect={(service) => {
+                                                setShowBooking(false);
+                                                setProjectBuilderService(service);
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>
