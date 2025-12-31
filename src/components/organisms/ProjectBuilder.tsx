@@ -207,7 +207,7 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
     return (
         <div className="h-full flex flex-col md:flex-row bg-white">
             {/* Sidebar de Progresso (Fixa no Desktop) */}
-            <aside className="w-full md:w-[350px] bg-zinc-950 text-white p-8 md:p-12 flex flex-col justify-between shrink-0">
+            <aside className="hidden md:flex w-[350px] bg-zinc-950 text-white p-8 md:p-12 flex-col justify-between shrink-0">
                 <div>
                     <div className="flex items-center gap-3 mb-12 md:mb-16 cursor-pointer" onClick={onBack}>
                         <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-xs font-bold">AA</div>
@@ -253,15 +253,21 @@ export const ProjectBuilder: React.FC<ProjectBuilderProps> = ({ initialService, 
             </aside>
 
             {/* Mobile Progress Bar (Visible only on mobile) */}
-            <div className="md:hidden bg-zinc-950 text-white p-4 shrink-0 flex items-center justify-between">
-                <div className="flex items-center gap-2" onClick={onBack}>
-                    <div className="w-6 h-6 bg-emerald-600 rounded flex items-center justify-center text-[10px] font-bold">AA</div>
-                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">Builder</span>
+            <div className="md:hidden bg-zinc-950 text-white px-6 py-4 shrink-0 flex items-center justify-between shadow-md z-20">
+                <div className="flex items-center gap-3" onClick={onBack}>
+                    <ArrowLeft size={20} className="text-zinc-400" />
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Estimativa</span>
+                        <span className="text-sm font-bold text-emerald-400">{estimatedTotal} CHF</span>
+                    </div>
                 </div>
-                <div className="flex gap-1">
-                    {[0, 1, 2, 3].map(i => (
-                        <div key={i} className={`h-1 w-8 rounded-full transition-colors ${step >= i ? 'bg-emerald-500' : 'bg-zinc-800'}`}></div>
-                    ))}
+                <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Passo {step + 1} de 4</span>
+                    <div className="flex gap-1">
+                        {[0, 1, 2, 3].map(i => (
+                            <div key={i} className={`h-1 w-6 rounded-full transition-colors ${step >= i ? 'bg-emerald-500' : 'bg-zinc-800'}`}></div>
+                        ))}
+                    </div>
                 </div>
             </div>
 

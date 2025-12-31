@@ -59,13 +59,13 @@ export const ProcessTimeline: React.FC = () => {
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
                     {steps.map((step, i) => (
                         <div key={i} className="group relative p-8 rounded-3xl bg-zinc-50 hover:bg-white border border-zinc-100 hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500">
-                            <div className="mb-8 relative">
-                                <span className="text-6xl font-bold text-zinc-200 group-hover:text-emerald-100 transition-colors duration-500 select-none">
-                                    {step.number}
-                                </span>
-                                <div className="absolute top-1/2 left-0 -translate-y-1/2 ml-2 w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform duration-500">
+                            <div className="mb-6 flex items-center justify-between">
+                                <div className="w-14 h-14 bg-white rounded-xl shadow-lg flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform duration-500 relative z-10 border border-zinc-100/50">
                                     {step.icon}
                                 </div>
+                                <span className="text-5xl font-bold text-zinc-100 group-hover:text-emerald-50 transition-colors duration-500 select-none font-serif">
+                                    {step.number}
+                                </span>
                             </div>
 
                             <h3 className="text-xl font-bold text-zinc-900 mb-4">{step.title}</h3>
